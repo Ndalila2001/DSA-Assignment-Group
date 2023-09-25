@@ -36,7 +36,7 @@ service / on new http:Listener(5000) {
         }
             return newLecturer.lecturer_name + " added successfully!";
     }
-        
+   
     
 
     resource function put updateLecturer(Lecturer updatedLecturer) returns string|error {
@@ -55,10 +55,27 @@ service / on new http:Listener(5000) {
             return deleteLecturer.lecturer_name + "deleted successfully!";
     }
  
+    resource function get getLecturer(http:Caller caller, http:Request req,string lecturer_name, int staff_number, string course_name, string course_code, int office_number){
+         Lecturer? lecturer = lecturerTable.get(staff_number);
+          if lecturer is Lecturer {
+            json payload = {
+            "name": lecturer_name,
+            "staff number": staff_number,
+            "Course": course_name,
+            "Course code": course_code,
+            "Office number": office_number
+            
+        };
+        
+          }
+          http:Response response = new;
+        _= response.setJsonPayload(payload);
+        _= caller->respond(response);
+    }
     resource function get getLecturerWithStaffNumber() returns string|error {
 
         var lecturerStaffNumber = from var lecturer in lecturerTable
-            join var lecturerStaffNum in course_lecturerTable
+            join var lecturerStaffNum in lecturerTable
         on lecturer.staff_number equals lecturerStaffNum.staff_number
             join var staff_number in lecturerTable
         on lecturerStaffNum.staff_number equals lecturer.staff_number
@@ -75,3 +92,23 @@ service / on new http:Listener(5000) {
        
 }
 
+resource function get getLecturerWithCourse() returns string|error {
+    
+    var lecturerCourseName = from var lecturer in lecturerTable
+        join var lecturerCourse in course_lecturerTable
+     on lecturer.course_name equals lecturerCourse.course_name
+        join var course_name in lecturerTable
+    on lecturerCourse.course_name equals lecturer.course_name
+       select {
+            staff_number: lecturer.staff_number,
+            lecturer_name: lecturer.lecturer_name,
+            office_number: lecturer.office_number,
+            course_name: lecturer.course_name,
+            course_code: lecturer.course_code
+       };
+        io:println("lecturerCourseName", lecturerCourseName);
+
+
+}
+
+}

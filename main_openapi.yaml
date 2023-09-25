@@ -1,0 +1,180 @@
+openapi: 3.0.1
+info:
+  title: Lecturer Management System
+  description: A lecturer Management System to store and display lecturers' information
+  version: '1.0'
+servers:
+  - url: http://localhost:5000
+paths:
+  /addLecturer:
+    summary: a function to add new lecturers to the system.
+    post:
+      requestBody:
+        content:
+         application/json:
+          schema:
+           $ref: '#/components/schemas/Lecturer'
+          
+      responses:
+        '200':
+          description: successful response
+          content:
+            application/json:
+              schema: 
+                type: string
+        '500' :
+          description: Internal server error
+          content:
+           application/json:
+            schema: 
+             type: '#/components/schemas/ErrorPayload'
+             
+  
+  /updateLecturer:
+    summary: a function that will be used to update lecturer information.
+put:
+      requestBody:
+        content:
+          application/json:
+           schema: 
+            $ref: '#/components/schemas/Lecturer'
+            responses:
+             '200':
+               description: successful response
+               content: 
+                 application/json:
+                  schema:
+                    type: string 
+            '500': 
+              description: Internal server error 
+              content:
+               application/json:
+                schema: 
+                  $ref: '#/components/schemas/ErrorPayload'
+
+ /deleteLecturer: 
+    summary: a function that will be used to delete lecturer information.
+    delete:
+      parameters:
+      - name: staffNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: successful response
+          content:
+              schema:
+                type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+
+/getLecturer:
+    summary: a function to retrieve lecturer information.
+    get:
+    responses:
+        "200":
+          description: Ok
+          content:
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+
+/getLecturerWithStaffNumber:
+  summary: a function to retrieve lecturer information with staff number.
+  get:
+  responses: 
+        "200":
+          description: Ok
+          content:
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+
+/getLecturerWithCourse:
+summary: a function to retrieve lecturer information with course.
+get:
+responses:
+    "200":
+          description: Ok
+          content:
+            text/plain:
+              schema:
+                type: string
+    "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+
+ 
+
+
+components:
+  schemas:
+    ErrorPayload:
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Reason phrase
+        path:
+          type: string
+          description: Request path
+        method:
+          type: string
+          description: Method type of the request
+        message:
+          type: string
+          description: Error message
+        timestamp:
+          type: string
+          description: Timestamp of the error
+        status:
+          type: integer
+          description: Relevant HTTP status code
+          format: int32
+    Lecturer: 
+     required:
+      - lecturer_name
+      - staff_number
+      - office_number
+      - course_name
+      - course_code
+     type: object
+     properties:
+       lecturer_name:
+        type: string
+       staff_number:
+        type: integer
+       office_number:
+        type: integer
+       course_name:
+        type: string
+    Course: 
+     required:
+      - course_code
+      - course_name
+
+        
+
+
+    
